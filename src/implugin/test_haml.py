@@ -15,8 +15,8 @@ class MockedHamlApplication(Jinja2Application):
         self.settings = {}
         self.config = MagicMock()
 
-    def _create_config(self):
-        self.flags['_create_config'] = True
+    def _create_jinja2_settings(self):
+        self.flags['_create_jinja2_settings'] = True
 
     def _generate_registry(self, registry):
         self.flags['_generate_registry'] = True
@@ -32,10 +32,12 @@ class TestHamlApplication(object):
     def application(self):
         return ExampleHamlApplication('module')
 
-    def test_create_config(self, application):
-        application._create_config()
+    def test_create_jinja2_settings(self, application):
+        application.settings['jinja2.extensions'] = []
 
-        assert application.flags['_create_config'] is True
+        application._create_jinja2_settings()
+
+        assert application.flags['_create_jinja2_settings'] is True
         assert application.settings == {
             'jinja2.extensions': ['hamlish_jinja.HamlishExtension']
         }
